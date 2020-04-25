@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
 import Upload from '@/components/Upload'
 import Index from '@/components/Index'
+import ApiManager from '@/components/api/ApiManager'
 
 Vue.use(Router)
 
@@ -11,8 +12,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'HelloWorld',
-      component: HelloWorld
+      name: 'Index',
+      component: Index
     },
     {
       path: '/upload',
@@ -22,7 +23,18 @@ export default new Router({
     {
       path: '/index',
       name: 'Index',
-      component: Index
+      redirect: '/welcome',
+      component: Index,
+      children: [
+        {
+          path: '/welcome',
+          component: HelloWorld
+        },
+        {
+          path: '/apiManager',
+          component: ApiManager
+        }
+      ]
     }
   ]
 })

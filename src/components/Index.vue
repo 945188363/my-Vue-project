@@ -21,8 +21,9 @@
           unique-opened
           :collapse="isCollapse"
           :collapse-transition="false"
+          router
         >
-          <el-menu-item index="1">
+          <el-menu-item index="/apiManager">
             <i class="el-icon-location"></i>
             <span>API管理</span>
           </el-menu-item>
@@ -64,12 +65,7 @@
       </el-aside>
       <!-- 主体 -->
       <el-main>
-        <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
-          <el-tab-pane label="用户管理" name="first">用户管理</el-tab-pane>
-          <el-tab-pane label="配置管理" name="second">配置管理</el-tab-pane>
-          <el-tab-pane label="角色管理" name="third">角色管理</el-tab-pane>
-          <el-tab-pane label="定时任务补偿" name="fourth">定时任务补偿</el-tab-pane>
-        </el-tabs>
+        <router-view></router-view>
       </el-main>
     </el-container>
   </el-container>
