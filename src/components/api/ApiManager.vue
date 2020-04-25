@@ -6,12 +6,24 @@
       </el-breadcrumb>
       <div style="margin-top: 30px;">
         <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
-          <el-tab-pane label="用户管理" name="first">
+          <el-tab-pane label="api创建" name="first">
             <!--卡片视图-->
             <el-card class="box-card">
                 <div>
+                  <!--api组-->
+                  <div style="margin-top: 20px;">
+                    <p class="lh_15"><span >api组&nbsp;:&nbsp;</span><br></p>
+                    <el-select style="width: 300px;" clearable v-model="ApiGroup" placeholder="请选择">
+                      <el-option
+                        v-for="item in groups"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                      </el-option>
+                    </el-select>
+                  </div>
                   <!--api名称-->
-                  <div>
+                  <div style="margin-top: 20px;">
                     <p class="lh_15"><span >api名称&nbsp;:&nbsp;</span><br></p>
                     <el-input style="width: 300px;" v-model="ApiName" placeholder="请输入内容"></el-input>
                   </div>
@@ -88,7 +100,7 @@
                 </div>
               </el-card>
           </el-tab-pane>
-          <el-tab-pane label="配置管理" name="second">配置管理</el-tab-pane>
+          <el-tab-pane label="api组创建" name="second">配置管理</el-tab-pane>
           <el-tab-pane label="角色管理" name="third">角色管理</el-tab-pane>
           <el-tab-pane label="定时任务补偿" name="fourth">定时任务补偿</el-tab-pane>
         </el-tabs>
@@ -101,6 +113,10 @@ export default {
   name: 'ApiManager',
   data () {
     return {
+      groups: [{
+        value: '112',
+        label: '112'
+      }],
       options: [{
         value: 'RAW',
         label: 'RAW'
@@ -111,6 +127,7 @@ export default {
         value: 'XML',
         label: 'XML'
       }],
+      ApiGroup: '',
       ApiReturnType: '',
       ApiUrl: '192.168.1.1',
       ApiName: 'test',

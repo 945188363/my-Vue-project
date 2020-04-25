@@ -65,7 +65,9 @@
       </el-aside>
       <!-- 主体 -->
       <el-main>
-        <router-view></router-view>
+        <el-scrollbar style="height:100%">
+          <router-view></router-view>
+        </el-scrollbar>
       </el-main>
     </el-container>
   </el-container>
