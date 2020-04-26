@@ -220,13 +220,13 @@
                   label="操作">
                   <template slot-scope="scope">
                     <el-tooltip class="item" effect="dark" content="编辑" placement="top">
-                      <el-button @click="showEditDialog(scope.row.id)" type="primary"  icon="el-icon-edit" circle></el-button>
+                      <el-button @click="showEditApiDetailDialog(scope.row.id)" type="primary"  icon="el-icon-edit" circle></el-button>
                     </el-tooltip>
                     <el-tooltip class="item" effect="dark" content="删除" placement="top">
                       <el-popconfirm
                         title="该操作会删除组内所有api，确认删除吗？"
                       >
-                        <el-button @click="showEditDialog(scope)" type="danger" slot="reference" icon="el-icon-delete" circle></el-button>
+                        <el-button @click="showEditApiDetailDialog" type="danger" slot="reference" icon="el-icon-delete" circle></el-button>
                       </el-popconfirm>
                     </el-tooltip>
                   </template>
@@ -270,6 +270,69 @@
         <el-button type="primary" @click="createApiGroupDialogFormVisible = false">确 定</el-button>
       </div>
     </el-dialog>
+    <el-dialog title="api详情修改" :visible.sync="editApiDetailDialogFormVisible">
+      <el-form :model="ApiDetailsEditForm">
+        <el-form-item label="组名称" :label-width="formLabelWidth">
+          <el-select style="width: 100px;" clearable v-model="ApiDetailsEditForm.ApiGroup">
+            <el-option
+              v-for="item in ApiGroupsData"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="api名称" :label-width="formLabelWidth">
+          <el-input style="width: 300px;" v-model="ApiDetailsEditForm.ApiName" ></el-input>
+        </el-form-item>
+        <el-form-item label="转发地址" :label-width="formLabelWidth">
+          <el-input style="width: 500px;" v-model="ApiDetailsEditForm.ApiUrl">
+            <template slot="prepend">Http://</template>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="后端地址" :label-width="formLabelWidth">
+          <el-input style="width: 500px;" v-model="ApiDetailsEditForm.BackendUrl"></el-input>
+        </el-form-item>
+        <el-form-item label="返回格式" :label-width="formLabelWidth">
+          <el-select style="width: 300px;" v-model="ApiDetailsEditForm.ApiReturnType">
+            <el-option
+              v-for="item in ReturnTypes"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="请求方式" :label-width="formLabelWidth">
+          <el-radio v-model="ApiDetailsEditForm.ApiMethod" label="GET">GET</el-radio>
+          <el-radio v-model="ApiDetailsEditForm.ApiMethod" label="POST">POST</el-radio>
+          <el-radio v-model="ApiDetailsEditForm.ApiMethod" label="HEAD">HEAD</el-radio>
+          <el-radio v-model="ApiDetailsEditForm.ApiMethod" label="PATCH">PATCH</el-radio>
+          <el-radio v-model="ApiDetailsEditForm.ApiMethod" label="DELETE">DELETE</el-radio>
+          <el-radio v-model="ApiDetailsEditForm.ApiMethod" label="PUT">PUT</el-radio>
+          <el-radio v-model="ApiDetailsEditForm.ApiMethod" label="OPTIONS">OPTIONS</el-radio>
+        </el-form-item>
+        <el-form-item label="超时限制(ms)" :label-width="formLabelWidth">
+          <el-input style="width: 300px;" v-model="ApiDetailsEditForm.ApiTimeout"></el-input>
+        </el-form-item>
+        <el-form-item label="重试次数" :label-width="formLabelWidth">
+          <el-input style="width: 300px;" v-model="ApiDetailsEditForm.ApiRetry"></el-input>
+        </el-form-item>
+        <el-form-item label="异常返回" :label-width="formLabelWidth">
+          <el-input
+            style="width: 300px;"
+            type="textarea"
+            :autosize="{ minRows: 2, maxRows: 4}"
+            v-model="ApiDetailsEditForm.ApiReturnContent">
+          </el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="editApiDetailDialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="editApiDetailDialogFormVisible = false">确 定</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -280,18 +343,36 @@ export default {
     return {
       editApiGroupDialogFormVisible: false,
       createApiGroupDialogFormVisible: false,
-      ApiGroupDetailCreateForm: {
-        id: '',
-        name: '',
-        description: ''
+      editApiDetailDialogFormVisible: false,
+      ApiDetailsEditForm: {
+        id: '1',
+        ApiName: 'test',
+        ApiMethod: 'POST',
+        ApiUrl: 'http://test.com/getApi',
+        BackendUrl: '/api/v1/getApis',
+        ApiGroup: '112',
+        ApiReturnType: 'JSON',
+        ApiTimeout: '3000',
+        ApiRetry: '3',
+        ApiReturnContent: ''
       },
       ApiDetailsData: [{
         id: '1',
         ApiName: 'test',
         ApiMethod: 'POST',
         ApiUrl: 'http://test.com/getApi',
-        BackendUrl: '/api/v1/getApis'
+        BackendUrl: '/api/v1/getApis',
+        ApiGroup: '112',
+        ApiReturnType: 'JSON',
+        ApiTimeout: '3000',
+        ApiRetry: '3',
+        ApiReturnContent: ''
       }],
+      ApiGroupDetailCreateForm: {
+        id: '',
+        name: '',
+        description: ''
+      },
       ApiGroupDetailEditForm: {
         id: '',
         name: '',
@@ -349,6 +430,10 @@ export default {
     },
     showCreateDialog () {
       this.createApiGroupDialogFormVisible = true
+    },
+    showEditApiDetailDialog (id) {
+      this.editApiDetailDialogFormVisible = true
+      this.ApiDetailsEditForm = this.ApiDetailsData[id - 1]
     }
   }
 }
