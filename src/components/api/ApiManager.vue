@@ -1,21 +1,23 @@
 <template>
   <div>
-      <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item :to="{ path: '/index' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item>API管理</el-breadcrumb-item>
-      </el-breadcrumb>
-      <div style="margin-top: 30px;">
-        <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
-          <el-tab-pane label="api创建" name="first">
-            <!--卡片视图-->
-            <el-card class="box-card">
+    <el-scrollbar>
+      <div style="height: 620px;">
+        <el-breadcrumb separator-class="el-icon-arrow-right">
+          <el-breadcrumb-item :to="{ path: '/index' }">首页</el-breadcrumb-item>
+          <el-breadcrumb-item>API管理</el-breadcrumb-item>
+        </el-breadcrumb>
+        <div style="margin-top: 30px;" >
+          <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+            <el-tab-pane label="api创建" name="first">
+              <!--卡片视图-->
+              <el-card class="box-card">
                 <div>
                   <!--api组-->
                   <div style="margin-top: 20px;">
                     <p class="lh_15"><span >api组&nbsp;:&nbsp;</span><br></p>
                     <el-select style="width: 300px;" clearable v-model="ApiGroup" placeholder="请选择">
                       <el-option
-                        v-for="item in groups"
+                        v-for="item in ApiGroupsData"
                         :key="item.value"
                         :label="item.label"
                         :value="item.value">
@@ -63,7 +65,6 @@
                     <el-radio v-model="ApiMethod" label="PUT">PUT</el-radio>
                     <el-radio v-model="ApiMethod" label="OPTIONS">OPTIONS</el-radio>
                   </div>
-
                   <!--api请求超时时间-->
                   <div style="margin-top: 20px;">
                     <p class="lh_15"><span >超时限制(ms)&nbsp;:&nbsp;</span>
@@ -97,15 +98,153 @@
                       v-model="ApiReturnContent">
                     </el-input>
                   </div>
+                  <div style="margin-top: 25px;">
+                    <p class="lh_25">
+                      <el-button type="primary">保存</el-button>
+                    </p>
+                  </div>
                 </div>
               </el-card>
-          </el-tab-pane>
-          <el-tab-pane label="api组创建" name="second">配置管理</el-tab-pane>
-          <el-tab-pane label="角色管理" name="third">角色管理</el-tab-pane>
-          <el-tab-pane label="定时任务补偿" name="fourth">定时任务补偿</el-tab-pane>
-        </el-tabs>
+            </el-tab-pane>
+            <el-tab-pane label="api组管理" name="second">
+              <div class="groupToolBar"
+                   style="margin-top: 5px;margin-bottom: 20px; justify-content: space-between; display: flex;"
+              >
+                <el-button type="primary" icon="el-icon-plus" size="small" @click="showCreateDialog">新建</el-button>
+                <div>
+                  <el-input
+                    placeholder="请输入内容"
+                    v-model="searchGroup"
+                    clearable style="width: 300px;">
+                  </el-input>
+                  <el-button type="primary" icon="el-icon-search" size="small">搜索</el-button>
+                </div>
+              </div>
+              <el-table
+                :data="ApiGroupsDetailsData"
+                height="610"
+                border
+                style="width: 100%">
+                <el-table-column
+                  prop="name"
+                  label="组名称"
+                  width="300">
+                </el-table-column>
+                <el-table-column
+                  prop="description"
+                  label="组描述"
+                  width="560">
+                </el-table-column>
+                <el-table-column
+                  prop="operation"
+                  label="操作">
+                  <template slot-scope="scope">
+                    <el-tooltip class="item" effect="dark" content="编辑" placement="top">
+                      <el-button @click="showEditDialog(scope.row.id)" type="primary"  icon="el-icon-edit" circle></el-button>
+                    </el-tooltip>
+                    <el-tooltip class="item" effect="dark" content="删除" placement="top">
+                      <el-popconfirm
+                        title="该操作会删除组内所有api，确认删除吗？"
+                      >
+                        <el-button @click="showEditDialog(scope)" type="danger" slot="reference" icon="el-icon-delete" circle></el-button>
+                      </el-popconfirm>
+                    </el-tooltip>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-tab-pane>
+            <el-tab-pane label="api详情列表" name="third">
+              <div class="apiToolBar"
+                   style="margin-top: 5px;margin-bottom: 20px; justify-content: space-between; display: flex;"
+              >
+                <div>
+                  <el-input
+                    placeholder="请输入api名称，支持模糊搜索"
+                    v-model="searchGroup"
+                    clearable style="width: 300px;">
+                  </el-input>
+                  <el-select style="width: 150px;" clearable v-model="ApiGroup" placeholder="请选择">
+                    <el-option
+                      v-for="item in ApiGroupsData"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                  <el-button type="primary" icon="el-icon-search" size="small">搜索</el-button>
+                </div>
+              </div>
+              <el-table
+                :data="ApiGroupsDetailsData"
+                height="610"
+                border
+                style="width: 100%">
+                <el-table-column
+                  prop="name"
+                  label="组名称"
+                  width="300">
+                </el-table-column>
+                <el-table-column
+                  prop="description"
+                  label="组描述"
+                  width="560">
+                </el-table-column>
+                <el-table-column
+                  prop="operation"
+                  label="操作">
+                  <template slot-scope="scope">
+                    <el-tooltip class="item" effect="dark" content="编辑" placement="top">
+                      <el-button @click="showEditDialog(scope.row.id)" type="primary"  icon="el-icon-edit" circle></el-button>
+                    </el-tooltip>
+                    <el-tooltip class="item" effect="dark" content="删除" placement="top">
+                      <el-popconfirm
+                        title="该操作会删除组内所有api，确认删除吗？"
+                      >
+                        <el-button @click="showEditDialog(scope)" type="danger" slot="reference" icon="el-icon-delete" circle></el-button>
+                      </el-popconfirm>
+                    </el-tooltip>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-tab-pane>
+            <el-tab-pane label="定时任务补偿" name="fourth">定时任务补偿</el-tab-pane>
+          </el-tabs>
+        </div>
       </div>
-    </div>
+    </el-scrollbar>
+    <el-dialog title="编辑组内容" :visible.sync="editApiGroupDialogFormVisible">
+      <el-form :model="ApiGroupDetailEditForm">
+        <el-form-item label="组名称" :label-width="formLabelWidth">
+          <el-input v-model="ApiGroupDetailEditForm.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="组描述" :label-width="formLabelWidth">
+          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}"
+                    v-model="ApiGroupDetailEditForm.description" autocomplete="off">
+          </el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="editApiGroupDialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="editApiGroupDialogFormVisible = false">确 定</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog title="创建组" :visible.sync="createApiGroupDialogFormVisible">
+      <el-form :model="ApiGroupDetailCreateForm">
+        <el-form-item label="组名称" :label-width="formLabelWidth">
+          <el-input v-model="ApiGroupDetailCreateForm.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="组描述" :label-width="formLabelWidth">
+          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}"
+                    v-model="ApiGroupDetailCreateForm.description" autocomplete="off">
+          </el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="createApiGroupDialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="createApiGroupDialogFormVisible = false">确 定</el-button>
+      </div>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
@@ -113,7 +252,36 @@ export default {
   name: 'ApiManager',
   data () {
     return {
-      groups: [{
+      editApiGroupDialogFormVisible: false,
+      createApiGroupDialogFormVisible: false,
+      ApiGroupDetailCreateForm: {
+        id: '',
+        name: '',
+        description: ''
+      },
+      ApiGroupDetailEditForm: {
+        id: '',
+        name: '',
+        description: ''
+      },
+      ApiGroupsDetailsData: [{
+        id: '1',
+        name: 'a111',
+        description: '上海市普陀区金沙江路 1518 弄'
+      }, {
+        id: '2',
+        name: '22222',
+        description: '上海市普陀区金沙江路 1517 弄'
+      }, {
+        id: '3',
+        name: '33333',
+        description: '上海市普a陀区金沙江路 1519 弄'
+      }, {
+        id: '4',
+        name: '8888',
+        description: 'aa上海市普陀区金沙江路 1516 弄'
+      }],
+      ApiGroupsData: [{
         value: '112',
         label: '112'
       }],
@@ -134,7 +302,19 @@ export default {
       ApiMethod: '',
       ApiTimeout: '3000',
       ApiRetry: '3',
-      ApiReturnContent: ''
+      ApiReturnContent: '',
+      formLabelWidth: '120px',
+      searchGroup: ''
+    }
+  },
+  // 存放 方法
+  methods: {
+    showEditDialog (id) {
+      this.editApiGroupDialogFormVisible = true
+      this.ApiGroupDetailEditForm = this.ApiGroupsDetailsData[id - 1]
+    },
+    showCreateDialog () {
+      this.createApiGroupDialogFormVisible = true
     }
   }
 }
@@ -143,6 +323,9 @@ export default {
 <style lang="less" scoped>
   .lh_15{
     line-height: 15px;
+  }
+  .lh_25{
+    line-height: 25px;
   }
   .box-card{
     background-color: honeydew;
