@@ -42,12 +42,21 @@
                       <template slot="prepend">Http://</template>
                     </el-input>
                   </div>
+                  <!--api后端地址-->
+                  <div style="margin-top: 20px;">
+                    <p class="lh_15">
+                      <span>后端地址&nbsp;:&nbsp;</span>
+                      <br>
+                    </p>
+                    <el-input style="width: 500px;" placeholder="请输入内容" v-model="BackendUrl">
+                    </el-input>
+                  </div>
                   <!--api返回数据格式-->
                   <div style="margin-top: 20px;">
                     <p class="lh_15"><span>返回格式&nbsp;:&nbsp;</span><br></p>
                     <el-select style="width: 300px;" v-model="ApiReturnType" placeholder="请选择">
                       <el-option
-                        v-for="item in options"
+                        v-for="item in ReturnTypes"
                         :key="item.value"
                         :label="item.label"
                         :value="item.value">
@@ -113,7 +122,7 @@
                 <el-button type="primary" icon="el-icon-plus" size="small" @click="showCreateDialog">新建</el-button>
                 <div>
                   <el-input
-                    placeholder="请输入内容"
+                    placeholder="请输入组名，支持模糊搜索"
                     v-model="searchGroup"
                     clearable style="width: 300px;">
                   </el-input>
@@ -124,6 +133,7 @@
                 :data="ApiGroupsDetailsData"
                 height="610"
                 border
+                stripe
                 style="width: 100%">
                 <el-table-column
                   prop="name"
@@ -175,19 +185,35 @@
                 </div>
               </div>
               <el-table
-                :data="ApiGroupsDetailsData"
+                :data="ApiDetailsData"
                 height="610"
                 border
+                stripe
                 style="width: 100%">
                 <el-table-column
-                  prop="name"
-                  label="组名称"
-                  width="300">
+                  prop="ApiName"
+                  label="API"
+                  width="270">
                 </el-table-column>
                 <el-table-column
-                  prop="description"
-                  label="组描述"
-                  width="560">
+                  prop="ApiMethod"
+                  label="请求方式"
+                  width="80">
+                </el-table-column>
+                <el-table-column
+                  prop="ApiGroup"
+                  label="组"
+                  width="150">
+                </el-table-column>
+                <el-table-column
+                  prop="ApiUrl"
+                  label="请求URL"
+                  width="340">
+                </el-table-column>
+                <el-table-column
+                    prop="BackendUrl"
+                    label="后端URL"
+                    width="340">
                 </el-table-column>
                 <el-table-column
                   prop="operation"
@@ -259,6 +285,13 @@ export default {
         name: '',
         description: ''
       },
+      ApiDetailsData: [{
+        id: '1',
+        ApiName: 'test',
+        ApiMethod: 'POST',
+        ApiUrl: 'http://test.com/getApi',
+        BackendUrl: '/api/v1/getApis'
+      }],
       ApiGroupDetailEditForm: {
         id: '',
         name: '',
@@ -285,7 +318,7 @@ export default {
         value: '112',
         label: '112'
       }],
-      options: [{
+      ReturnTypes: [{
         value: 'RAW',
         label: 'RAW'
       }, {
@@ -297,7 +330,8 @@ export default {
       }],
       ApiGroup: '',
       ApiReturnType: '',
-      ApiUrl: '192.168.1.1',
+      ApiUrl: 'test.com/getApis',
+      BackendUrl: '/api/v1/getApis',
       ApiName: 'test',
       ApiMethod: '',
       ApiTimeout: '3000',
