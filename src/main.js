@@ -14,7 +14,7 @@ axios.defaults.baseURL = 'http://localhost:8080/api/'
 
 Vue.prototype.$http = axios
 Vue.prototype.qs = qs
-
+Vue.prototype.$message = ElementUI.Message
 Vue.use(less)
 Vue.use(ElementUI)
 

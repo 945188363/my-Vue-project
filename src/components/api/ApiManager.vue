@@ -109,7 +109,7 @@
                   </div>
                   <div style="margin-top: 25px;">
                     <p class="lh_25">
-                      <el-button type="primary">保存</el-button>
+                      <el-button type="primary" @click="CreateApiDetail">保存</el-button>
                     </p>
                   </div>
                 </div>
@@ -119,7 +119,7 @@
               <div class="groupToolBar"
                    style="margin-top: 5px;margin-bottom: 20px; justify-content: space-between; display: flex;"
               >
-                <el-button type="primary" icon="el-icon-plus" size="small" @click="showCreateDialog">新建</el-button>
+                <el-button type="primary" icon="el-icon-plus" size="small" @click="showCreateApiGroupDetailDialog">新建</el-button>
                 <div>
                   <el-input
                     placeholder="请输入组名，支持模糊搜索"
@@ -150,13 +150,13 @@
                   label="操作">
                   <template slot-scope="scope">
                     <el-tooltip class="item" effect="dark" content="编辑" placement="top">
-                      <el-button @click="showEditDialog(scope.row.id)" type="primary"  icon="el-icon-edit" circle></el-button>
+                      <el-button @click="showEditApiGroupDetailDialog(scope.row.id)" type="primary"  icon="el-icon-edit" circle></el-button>
                     </el-tooltip>
                     <el-tooltip class="item" effect="dark" content="删除" placement="top">
                       <el-popconfirm
                         title="该操作会删除组内所有api，确认删除吗？"
                       >
-                        <el-button @click="showEditDialog(scope)" type="danger" slot="reference" icon="el-icon-delete" circle></el-button>
+                        <el-button @click="showEditApiGroupDetailDialog(scope)" type="danger" slot="reference" icon="el-icon-delete" circle></el-button>
                       </el-popconfirm>
                     </el-tooltip>
                   </template>
@@ -224,7 +224,7 @@
                     </el-tooltip>
                     <el-tooltip class="item" effect="dark" content="删除" placement="top">
                       <el-popconfirm
-                        title="该操作会删除组内所有api，确认删除吗？"
+                        title="确认删除吗？"
                       >
                         <el-button @click="showEditApiDetailDialog" type="danger" slot="reference" icon="el-icon-delete" circle></el-button>
                       </el-popconfirm>
@@ -251,7 +251,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="editApiGroupDialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="editApiGroupDialogFormVisible = false">确 定</el-button>
+        <el-button type="primary" @click="EditApiGroupDetail">确 定</el-button>
       </div>
     </el-dialog>
     <el-dialog title="创建组" :visible.sync="createApiGroupDialogFormVisible">
@@ -267,7 +267,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="createApiGroupDialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="createApiGroupDialogFormVisible = false">确 定</el-button>
+        <el-button type="primary" @click="CreateApiGroupDetail">确 定</el-button>
       </div>
     </el-dialog>
     <el-dialog title="api详情修改" :visible.sync="editApiDetailDialogFormVisible">
@@ -329,7 +329,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="editApiDetailDialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="editApiDetailDialogFormVisible = false">确 定</el-button>
+        <el-button type="primary" @click="EditApiDetail">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -424,16 +424,55 @@ export default {
   },
   // 存放 方法
   methods: {
-    showEditDialog (id) {
+    showEditApiGroupDetailDialog (id) {
       this.editApiGroupDialogFormVisible = true
       this.ApiGroupDetailEditForm = this.ApiGroupsDetailsData[id - 1]
     },
-    showCreateDialog () {
+    showCreateApiGroupDetailDialog () {
       this.createApiGroupDialogFormVisible = true
     },
     showEditApiDetailDialog (id) {
       this.editApiDetailDialogFormVisible = true
       this.ApiDetailsEditForm = this.ApiDetailsData[id - 1]
+    },
+    // 创建ApiGroup详情，提交表单
+    async CreateApiGroupDetail () {
+      this.createApiGroupDialogFormVisible = false
+      // 上传表单
+      const response = await this.$http.post('/createApiGroupDetail', this.ApiGroupDetailCreateForm)
+      console.log(response)
+    },
+    // 修改ApiGroup详情，提交表单
+    async EditApiGroupDetail () {
+      this.editApiGroupDialogFormVisible = false
+      // 上传表单
+      const response = await this.$http.post('/updateApiGroupDetail', this.ApiGroupDetailEditForm)
+      console.log(response)
+    },
+    // 创建Api详情，提交表单
+    async CreateApiDetail () {
+      const ApiDetailsCreateForm = {
+        'ApiName': this.ApiName,
+        'ApiMethod': this.ApiMethod,
+        'ApiUrl': this.ApiUrl,
+        'BackendUrl': this.BackendUrl,
+        'ApiGroup': this.ApiGroup,
+        'ApiReturnType': this.ApiReturnType,
+        'ApiTimeout': this.ApiTimeout,
+        'ApiRetry': this.ApiRetry,
+        'ApiReturnContent': this.ApiReturnContent
+      }
+      // 上传表单
+      const response = await this.$http.post('/createApiDetail', ApiDetailsCreateForm)
+      console.log(response)
+    },
+    // 修改Api详情，提交表单
+    async EditApiDetail () {
+      this.editApiDetailDialogFormVisible = false
+      // 上传表单
+      const response = await this.$http.post('/updateApiDetail', this.ApiDetailsEditForm)
+      console.log(response)
+      this.$message.success('修改api详情成功!')
     }
   }
 }
