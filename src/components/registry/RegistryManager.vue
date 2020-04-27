@@ -11,7 +11,7 @@
       <div class="groupToolBar"
            style="margin-top: 5px;margin-bottom: 20px; justify-content: space-between; display: flex;"
       >
-        <el-button type="primary" icon="el-icon-plus" size="small" @click="showCreateRegistryDialog">服务注册方式</el-button>
+        <el-button type="primary" icon="el-icon-plus" size="small" @click="showCreateRegistryDialog">新建服务注册方式</el-button>
         <div>
           <el-input
             placeholder="请输入服务注册方式名称，支持模糊搜索"
@@ -22,7 +22,7 @@
         </div>
       </div>
       <el-table
-        :data="ApiGroupsDetailsData"
+        :data="RegistrysData"
         height="610"
         border
         stripe
@@ -33,7 +33,7 @@
           width="300">
         </el-table-column>
         <el-table-column
-          prop="description"
+          prop="center"
           label="注册中心选择"
           width="560">
         </el-table-column>
@@ -42,11 +42,11 @@
           label="操作">
           <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" content="编辑" placement="top">
-              <el-button @click="showEditApiGroupDetailDialog(scope.row.id)" type="primary"  icon="el-icon-edit" circle></el-button>
+              <el-button @click="showEditRegistryDialog(scope.row.id)" type="primary"  icon="el-icon-edit" circle></el-button>
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="删除" placement="top">
               <el-popconfirm
-                title="该操作会删除组内所有api，确认删除吗？"
+                title="确认删除吗？"
               >
                 <el-button @click="showEditApiGroupDetailDialog(scope)" type="danger" slot="reference" icon="el-icon-delete" circle></el-button>
               </el-popconfirm>
@@ -80,7 +80,30 @@
         <el-button type="primary" @click="CreateRegistry">确 定</el-button>
       </div>
     </el-dialog>
-
+    <el-dialog title="编辑服务注册方式" :visible.sync="editRegistryDialogFormVisible">
+      <el-form :model="registryEditForm">
+        <el-form-item label="服务注册方式名称" :label-width="formLabelWidth">
+          <el-input v-model="registryEditForm.name" disabled style="width: 300px" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="注册中心类型" :label-width="formLabelWidth">
+          <el-select style="width: 300px;" clearable disabled  v-model="registryEditForm.center" placeholder="请选择">
+            <el-option
+              v-for="item in registryCentersData"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="接入地址" :label-width="formLabelWidth">
+          <el-input v-model="registryEditForm.centerUrl" style="width: 300px" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="editRegistryDialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="CreateRegistry">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -89,7 +112,26 @@ export default {
   name: 'RegistryManager',
   data: function () {
     return {
+      RegistrysData: [
+        {
+          id: 1,
+          name: 'consul注册方式',
+          center: 'Consul',
+          centerUrl: '192.168.1.1:8888'
+        },
+        {
+          id: 2,
+          name: 'etcd注册方式',
+          center: 'Etcd',
+          centerUrl: '192.168.1.1:8888'
+        }
+      ],
       registryCreateForm: {
+        name: 'consul注册方式',
+        center: 'Consul',
+        centerUrl: '192.168.1.1:8888'
+      },
+      registryEditForm: {
         name: 'consul注册方式',
         center: 'Consul',
         centerUrl: '192.168.1.1:8888'
@@ -118,6 +160,7 @@ export default {
         }
       ],
       createRegistryDialogFormVisible: false,
+      editRegistryDialogFormVisible: false,
       searchRegistry: '',
       formLabelWidth: '180px'
     }
@@ -129,6 +172,10 @@ export default {
     },
     CreateRegistry () {
       this.createRegistryDialogFormVisible = false
+    },
+    showEditRegistryDialog (id) {
+      this.editRegistryDialogFormVisible = true
+      this.registryEditForm = this.RegistrysData[id - 1]
     }
   }
 }
