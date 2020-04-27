@@ -2,10 +2,12 @@
   <div>
     <el-scrollbar>
       <div style="height: 620px;">
-        <el-breadcrumb separator-class="el-icon-arrow-right">
-          <el-breadcrumb-item :to="{ path: '/index' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item>API管理</el-breadcrumb-item>
-        </el-breadcrumb>
+        <div>
+          <el-breadcrumb separator-class="el-icon-arrow-right">
+            <el-breadcrumb-item :to="{ path: '/index' }">首页</el-breadcrumb-item>
+            <el-breadcrumb-item>API管理</el-breadcrumb-item>
+          </el-breadcrumb>
+        </div>
         <div style="margin-top: 30px;" >
           <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
             <el-tab-pane label="api创建" name="first">

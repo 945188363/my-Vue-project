@@ -4,6 +4,8 @@ import HelloWorld from '@/components/HelloWorld'
 import Upload from '@/components/Upload'
 import Index from '@/components/Index'
 import ApiManager from '@/components/api/ApiManager'
+import RegistryManager from '../components/registry/RegistryManager'
+import LoadBalanceManager from '../components/loadbalance/LoadBalanceManager'
 
 Vue.use(Router)
 
@@ -33,6 +35,14 @@ export default new Router({
         {
           path: '/apiManager',
           component: ApiManager
+        },
+        {
+          path: '/registryManager',
+          component: RegistryManager
+        },
+        {
+          path: '/loadBalanceManager',
+          component: LoadBalanceManager
         }
       ]
     }

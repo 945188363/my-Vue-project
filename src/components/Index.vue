@@ -33,8 +33,8 @@
               <i class="el-icon-location"></i>
               <span>注册方式与负载</span>
             </template>
-            <el-menu-item index="2-1">服务注册方式</el-menu-item>
-            <el-menu-item index="2-2">负载均衡</el-menu-item>
+            <el-menu-item index="/registryManager">服务注册方式</el-menu-item>
+            <el-menu-item index="/loadBalanceManager">负载均衡</el-menu-item>
           </el-submenu>
 
           <el-menu-item index="3">
