@@ -9,7 +9,7 @@
           </el-breadcrumb>
         </div>
         <div style="margin-top: 30px;" >
-          <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+          <el-tabs v-model="apiManagerActiveName" type="card">
             <el-tab-pane label="api创建" name="first">
               <!--卡片视图-->
               <el-card class="box-card">
@@ -421,7 +421,8 @@ export default {
       ApiRetry: '3',
       ApiReturnContent: '',
       formLabelWidth: '120px',
-      searchGroup: ''
+      searchGroup: '',
+      apiManagerActiveName: 'first'
     }
   },
   // 存放 方法

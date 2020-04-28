@@ -52,7 +52,7 @@
               <i class="el-icon-location"></i>
               <span>网关设置</span>
             </template>
-            <el-menu-item index="5-1">日志设置</el-menu-item>
+            <el-menu-item index="/logManager">日志设置</el-menu-item>
           </el-submenu>
 
           <el-submenu index="6">
