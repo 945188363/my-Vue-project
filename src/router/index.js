@@ -8,6 +8,8 @@ import RegistryManager from '../components/registry/RegistryManager'
 import LoadBalanceManager from '../components/loadbalance/LoadBalanceManager'
 import Log from '../components/log/Log'
 import Monitor from '../components/monitor/Monitor'
+import PluginManager from '../components/plugin/PluginManager'
+import PluginSetting from '../components/plugin/PluginSetting'
 
 Vue.use(Router)
 
@@ -53,6 +55,14 @@ export default new Router({
         {
           path: '/monitorManager',
           component: Monitor
+        },
+        {
+          path: '/pluginManager',
+          component: PluginManager
+        },
+        {
+          path: '/apiPluginManager',
+          component: PluginSetting
         }
       ]
     }

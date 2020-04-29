@@ -52,9 +52,15 @@
 
           <el-submenu index="6">
             <template slot="title">
-              <i class="el-icon-location"></i>
+              <i class="el-icon-setting"></i>
               <span>插件设置</span>
             </template>
+            <el-menu-item index="/pluginManager">
+              <span>扩展插件</span>
+            </el-menu-item>
+            <el-menu-item index="/apiPluginManager">
+              <span>api扩展管理</span>
+            </el-menu-item>
           </el-submenu>
         </el-menu>
       </el-aside>
