@@ -23,12 +23,17 @@
           :collapse-transition="false"
           router
         >
+          <el-menu-item index="/index">
+            <i class="el-icon-s-home"></i>
+            <span>首页</span>
+          </el-menu-item>
+
           <el-menu-item index="/apiManager">
             <i class="el-icon-s-operation"></i>
             <span>API管理</span>
           </el-menu-item>
 
-          <el-submenu index="2">
+          <el-submenu index="3">
             <template slot="title">
               <i class="el-icon-help"></i>
               <span>注册方式与负载</span>
@@ -48,6 +53,7 @@
               <span>网关设置</span>
             </template>
             <el-menu-item index="/logManager">日志设置</el-menu-item>
+            <el-menu-item index="/elkSearch">ELK日志查询</el-menu-item>
           </el-submenu>
 
           <el-submenu index="6">
@@ -59,7 +65,7 @@
               <span>扩展插件</span>
             </el-menu-item>
             <el-menu-item index="/apiPluginManager">
-              <span>api扩展管理</span>
+              <span>api插件管理</span>
             </el-menu-item>
           </el-submenu>
         </el-menu>

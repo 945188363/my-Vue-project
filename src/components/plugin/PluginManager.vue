@@ -4,6 +4,7 @@
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item :to="{ path: '/index' }">首页</el-breadcrumb-item>
         <el-breadcrumb-item>插件设置</el-breadcrumb-item>
+        <el-breadcrumb-item>扩展插件</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div  style="margin-top: 25px;margin-bottom: 20px">

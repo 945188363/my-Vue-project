@@ -10,6 +10,7 @@ import Log from '../components/log/Log'
 import Monitor from '../components/monitor/Monitor'
 import PluginManager from '../components/plugin/PluginManager'
 import PluginSetting from '../components/plugin/PluginSetting'
+import LogSearch from '../components/log/LogSearch'
 
 Vue.use(Router)
 
@@ -63,6 +64,10 @@ export default new Router({
         {
           path: '/apiPluginManager',
           component: PluginSetting
+        },
+        {
+          path: '/elkSearch',
+          component: LogSearch
         }
       ]
     }
