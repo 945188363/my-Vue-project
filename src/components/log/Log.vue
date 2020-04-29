@@ -5,7 +5,8 @@
         <div>
           <el-breadcrumb separator-class="el-icon-arrow-right">
             <el-breadcrumb-item :to="{ path: '/index' }">首页</el-breadcrumb-item>
-            <el-breadcrumb-item>API管理</el-breadcrumb-item>
+            <el-breadcrumb-item>网关设置</el-breadcrumb-item>
+            <el-breadcrumb-item>日志设置</el-breadcrumb-item>
           </el-breadcrumb>
         </div>
         <div style="margin-top: 30px;" >

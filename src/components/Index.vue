@@ -24,32 +24,27 @@
           router
         >
           <el-menu-item index="/apiManager">
-            <i class="el-icon-location"></i>
+            <i class="el-icon-s-operation"></i>
             <span>API管理</span>
           </el-menu-item>
 
           <el-submenu index="2">
             <template slot="title">
-              <i class="el-icon-location"></i>
+              <i class="el-icon-help"></i>
               <span>注册方式与负载</span>
             </template>
             <el-menu-item index="/registryManager">服务注册方式</el-menu-item>
             <el-menu-item index="/loadBalanceManager">负载均衡</el-menu-item>
           </el-submenu>
 
-          <el-menu-item index="3">
-            <i class="el-icon-location"></i>
-            <span>API管理</span>
-          </el-menu-item>
-
-          <el-menu-item index="4">
-            <i class="el-icon-location"></i>
+          <el-menu-item index="/monitorManager">
+            <i class="el-icon-aim"></i>
             <span>API监控</span>
           </el-menu-item>
 
           <el-submenu index="5">
             <template slot="title">
-              <i class="el-icon-location"></i>
+              <i class="el-icon-setting"></i>
               <span>网关设置</span>
             </template>
             <el-menu-item index="/logManager">日志设置</el-menu-item>
