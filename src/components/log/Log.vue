@@ -191,13 +191,13 @@ export default {
         field: '$host',
         description: '主机信息'
       }, {
-        field: '$request',
+        field: '$request_method',
         description: '记录请求的方法、URL和协议（例如 POST /proxy HTTPS)'
       }, {
         field: '$status_code',
         description: '记录请求状态'
       }, {
-        field: '$request_time',
+        field: '$latency_time',
         description: '请求处理时间，单位为秒，精度毫秒； 从读入客户端的第一个字节开始，直到把最后一个字符发送给客户端后进行日志写入为止。'
       }, {
         field: '$retry',

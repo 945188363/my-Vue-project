@@ -10,7 +10,7 @@ import less from 'less'
 import axios from 'axios'
 import qs from 'qs'
 
-axios.defaults.baseURL = 'http://localhost:8080/api/'
+axios.defaults.baseURL = 'http://localhost:8888/gateway'
 
 Vue.prototype.$http = axios
 Vue.prototype.qs = qs

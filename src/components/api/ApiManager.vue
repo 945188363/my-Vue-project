@@ -138,12 +138,12 @@
                 stripe
                 style="width: 100%">
                 <el-table-column
-                  prop="name"
+                  prop="ApiGroupName"
                   label="组名称"
                   width="300">
                 </el-table-column>
                 <el-table-column
-                  prop="description"
+                  prop="Description"
                   label="组描述"
                   width="560">
                 </el-table-column>
@@ -152,13 +152,13 @@
                   label="操作">
                   <template slot-scope="scope">
                     <el-tooltip class="item" effect="dark" content="编辑" placement="top">
-                      <el-button @click="showEditApiGroupDetailDialog(scope.row.id)" type="primary"  icon="el-icon-edit" circle></el-button>
+                      <el-button @click="showEditApiGroupDetailDialog(scope.row)" type="primary"  icon="el-icon-edit" circle></el-button>
                     </el-tooltip>
                     <el-tooltip class="item" effect="dark" content="删除" placement="top">
                       <el-popconfirm
                         title="该操作会删除组内所有api，确认删除吗？"
                       >
-                        <el-button @click="showEditApiGroupDetailDialog(scope)" type="danger" slot="reference" icon="el-icon-delete" circle></el-button>
+                        <el-button @click="DeleteApiGroupDetail" type="danger" slot="reference" icon="el-icon-delete" circle></el-button>
                       </el-popconfirm>
                     </el-tooltip>
                   </template>
@@ -205,7 +205,7 @@
                 <el-table-column
                   prop="ApiGroup"
                   label="组"
-                  width="150">
+                  width="110">
                 </el-table-column>
                 <el-table-column
                   prop="ApiUrl"
@@ -222,13 +222,13 @@
                   label="操作">
                   <template slot-scope="scope">
                     <el-tooltip class="item" effect="dark" content="编辑" placement="top">
-                      <el-button @click="showEditApiDetailDialog(scope.row.id)" type="primary"  icon="el-icon-edit" circle></el-button>
+                      <el-button @click="showEditApiDetailDialog(scope.row)" type="primary"  icon="el-icon-edit" circle></el-button>
                     </el-tooltip>
                     <el-tooltip class="item" effect="dark" content="删除" placement="top">
                       <el-popconfirm
                         title="确认删除吗？"
                       >
-                        <el-button @click="showEditApiDetailDialog" type="danger" slot="reference" icon="el-icon-delete" circle></el-button>
+                        <el-button @click="DeleteApiDetail" type="danger" slot="reference" icon="el-icon-delete" circle></el-button>
                       </el-popconfirm>
                     </el-tooltip>
                   </template>
@@ -243,11 +243,11 @@
     <el-dialog title="编辑组内容" :visible.sync="editApiGroupDialogFormVisible">
       <el-form :model="ApiGroupDetailEditForm">
         <el-form-item label="组名称" :label-width="formLabelWidth">
-          <el-input v-model="ApiGroupDetailEditForm.name" autocomplete="off"></el-input>
+          <el-input v-model="ApiGroupDetailEditForm.ApiGroupName" disabled autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="组描述" :label-width="formLabelWidth">
           <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}"
-                    v-model="ApiGroupDetailEditForm.description" autocomplete="off">
+                    v-model="ApiGroupDetailEditForm.Description" autocomplete="off">
           </el-input>
         </el-form-item>
       </el-form>
@@ -259,11 +259,11 @@
     <el-dialog title="创建组" :visible.sync="createApiGroupDialogFormVisible">
       <el-form :model="ApiGroupDetailCreateForm">
         <el-form-item label="组名称" :label-width="formLabelWidth">
-          <el-input v-model="ApiGroupDetailCreateForm.name" autocomplete="off"></el-input>
+          <el-input v-model="ApiGroupDetailCreateForm.ApiGroupName" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="组描述" :label-width="formLabelWidth">
           <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}"
-                    v-model="ApiGroupDetailCreateForm.description" autocomplete="off">
+                    v-model="ApiGroupDetailCreateForm.Description" autocomplete="off">
           </el-input>
         </el-form-item>
       </el-form>
@@ -285,7 +285,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="api名称" :label-width="formLabelWidth">
-          <el-input style="width: 300px;" v-model="ApiDetailsEditForm.ApiName" ></el-input>
+          <el-input style="width: 300px;" disabled v-model="ApiDetailsEditForm.ApiName" ></el-input>
         </el-form-item>
         <el-form-item label="转发地址" :label-width="formLabelWidth">
           <el-input style="width: 500px;" v-model="ApiDetailsEditForm.ApiUrl">
@@ -372,31 +372,15 @@ export default {
       }],
       ApiGroupDetailCreateForm: {
         id: '',
-        name: '',
-        description: ''
+        ApiGroupName: '',
+        Description: ''
       },
       ApiGroupDetailEditForm: {
         id: '',
-        name: '',
-        description: ''
+        ApiGroupName: '',
+        Description: ''
       },
-      ApiGroupsDetailsData: [{
-        id: '1',
-        name: 'a111',
-        description: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        id: '2',
-        name: '22222',
-        description: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        id: '3',
-        name: '33333',
-        description: '上海市普a陀区金沙江路 1519 弄'
-      }, {
-        id: '4',
-        name: '8888',
-        description: 'aa上海市普陀区金沙江路 1516 弄'
-      }],
+      ApiGroupsDetailsData: [],
       ApiGroupsData: [{
         value: '112',
         label: '112'
@@ -416,9 +400,9 @@ export default {
       ApiUrl: 'test.com/getApis',
       BackendUrl: '/api/v1/getApis',
       ApiName: 'test',
-      ApiMethod: '',
-      ApiTimeout: '3000',
-      ApiRetry: '3',
+      ApiMethod: 'POST',
+      ApiTimeout: 3000,
+      ApiRetry: 3,
       ApiReturnContent: '',
       formLabelWidth: '120px',
       searchGroup: '',
@@ -427,16 +411,16 @@ export default {
   },
   // 存放 方法
   methods: {
-    showEditApiGroupDetailDialog (id) {
+    showEditApiGroupDetailDialog (row) {
       this.editApiGroupDialogFormVisible = true
-      this.ApiGroupDetailEditForm = this.ApiGroupsDetailsData[id - 1]
+      this.ApiGroupDetailEditForm = row
     },
     showCreateApiGroupDetailDialog () {
       this.createApiGroupDialogFormVisible = true
     },
-    showEditApiDetailDialog (id) {
+    showEditApiDetailDialog (row) {
       this.editApiDetailDialogFormVisible = true
-      this.ApiDetailsEditForm = this.ApiDetailsData[id - 1]
+      this.ApiDetailsEditForm = row
     },
     // 创建ApiGroup详情，提交表单
     async CreateApiGroupDetail () {
@@ -444,12 +428,15 @@ export default {
       // 上传表单
       const response = await this.$http.post('/createApiGroupDetail', this.ApiGroupDetailCreateForm)
       console.log(response)
+      this.$message.success('新增api group详情成功!')
+      this.QueryApiGroupList()
     },
     // 修改ApiGroup详情，提交表单
     async EditApiGroupDetail () {
       this.editApiGroupDialogFormVisible = false
       // 上传表单
       const response = await this.$http.post('/updateApiGroupDetail', this.ApiGroupDetailEditForm)
+      this.$message.success('修改api group详情成功!')
       console.log(response)
     },
     // 创建Api详情，提交表单
@@ -468,15 +455,52 @@ export default {
       // 上传表单
       const response = await this.$http.post('/createApiDetail', ApiDetailsCreateForm)
       console.log(response)
+      this.$message.success('新增api详情成功!')
+      this.QueryApiDetailList()
+    },
+    // 获取Api详情列表
+    async QueryApiDetailList () {
+      const response = await this.$http.get('/queryApiDetailList')
+      console.log(response)
+      this.ApiDetailsData = response.data['data']
+    },
+    // 获取ApiGroup详情列表
+    async QueryApiGroupList () {
+      const response = await this.$http.get('/queryApiGroupList')
+      console.log(response)
+      this.ApiGroupsDetailsData = response.data['data']
     },
     // 修改Api详情，提交表单
     async EditApiDetail () {
       this.editApiDetailDialogFormVisible = false
       // 上传表单
+      console.log(this.ApiDetailsEditForm)
       const response = await this.$http.post('/updateApiDetail', this.ApiDetailsEditForm)
       console.log(response)
       this.$message.success('修改api详情成功!')
+    },
+    // 删除Api详情，提交表单
+    async DeleteApiDetail () {
+      // 上传表单
+      const response = await this.$http.delete('/deleteApiDetail', this.ApiDetailsEditForm)
+      console.log(response)
+      this.QueryApiDetailList()
+      this.$message.success('删除api详情成功!')
+    },
+    // 删除Api group详情，提交表单
+    async DeleteApiGroupDetail () {
+      // 上传表单
+      const response = await this.$http.delete('/deleteApiGroupDetail', this.ApiDetailsEditForm)
+      console.log(response)
+      this.QueryApiGroupList()
+      this.$message.success('删除api group详情成功!')
     }
+  },
+  created: function () {
+  },
+  mounted: function () {
+    this.QueryApiDetailList()
+    this.QueryApiGroupList()
   }
 }
 </script>
