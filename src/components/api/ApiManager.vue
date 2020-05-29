@@ -95,7 +95,7 @@
                         <span><i class="el-icon-info"></i></span>
                       </el-tooltip><br>
                     </p>
-                    <el-input style="width: 300px;" v-model="ApiTimeout" placeholder="请输入内容"></el-input>
+                    <el-input style="width: 300px;" v-model.number="ApiTimeout" placeholder="请输入内容"></el-input>
                   </div>
                   <!--api限流-->
                   <div style="margin-top: 20px;">
@@ -104,7 +104,7 @@
                         <span><i class="el-icon-info"></i></span>
                       </el-tooltip><br>
                     </p>
-                    <el-input style="width: 300px;" v-model="RateLimitNum" placeholder="请输入内容"></el-input>
+                    <el-input style="width: 300px;" v-model.number="RateLimitNum" placeholder="请输入内容"></el-input>
                   </div>
                   <!--api请求重试次数-->
                   <div style="margin-top: 20px;">
@@ -113,7 +113,7 @@
                         <span><i class="el-icon-info"></i></span>
                       </el-tooltip><br>
                     </p>
-                    <el-input style="width: 300px;" v-model="ApiRetry" placeholder="请输入内容"></el-input>
+                    <el-input style="width: 300px;" v-model.number="ApiRetry" placeholder="请输入内容"></el-input>
                   </div>
                   <!--api请求错误返回-->
                   <div style="margin-top: 20px;">
@@ -349,13 +349,13 @@
           <el-radio v-model="ApiDetailsEditForm.ApiMethod" label="OPTIONS">OPTIONS</el-radio>
         </el-form-item>
         <el-form-item label="流量限制" :label-width="formLabelWidth">
-          <el-input style="width: 300px;" v-model="ApiDetailsEditForm.RateLimitNum"></el-input>
+          <el-input style="width: 300px;" v-model.number="ApiDetailsEditForm.RateLimitNum"></el-input>
         </el-form-item>
         <el-form-item label="超时限制(ms)" :label-width="formLabelWidth">
-          <el-input style="width: 300px;" v-model="ApiDetailsEditForm.ApiTimeout"></el-input>
+          <el-input style="width: 300px;" v-model.number="ApiDetailsEditForm.ApiTimeout"></el-input>
         </el-form-item>
         <el-form-item label="重试次数" :label-width="formLabelWidth">
-          <el-input style="width: 300px;" v-model="ApiDetailsEditForm.ApiRetry"></el-input>
+          <el-input style="width: 300px;" v-model.number="ApiDetailsEditForm.ApiRetry"></el-input>
         </el-form-item>
         <el-form-item label="异常返回" :label-width="formLabelWidth">
           <el-input
@@ -392,9 +392,9 @@ export default {
         BackendUrl: '/api/v1/getApis',
         ApiGroup: '112',
         ApiReturnType: 'JSON',
-        RateLimitNum: '2000',
-        ApiTimeout: '3000',
-        ApiRetry: '3',
+        RateLimitNum: 2000,
+        ApiTimeout: 3000,
+        ApiRetry: 3,
         ApiReturnContent: ''
       },
       ApiDetailsData: [{
@@ -405,8 +405,8 @@ export default {
         BackendUrl: '/api/v1/getApis',
         ApiGroup: '112',
         ApiReturnType: 'JSON',
-        ApiTimeout: '3000',
-        ApiRetry: '3',
+        ApiTimeout: 3000,
+        ApiRetry: 3,
         ApiReturnContent: ''
       }],
       ApiGroupDetailCreateForm: {
