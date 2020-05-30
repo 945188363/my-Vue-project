@@ -19,10 +19,10 @@
                     <p class="lh_15"><span >api组&nbsp;:&nbsp;</span><br></p>
                     <el-select style="width: 300px;" clearable v-model="ApiGroup" placeholder="请选择">
                       <el-option
-                        v-for="item in ApiGroupsData"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
+                        v-for="item in ApiGroupsDetailsData"
+                        :key="item.ApiGroupName"
+                        :label="item.ApiGroupName"
+                        :value="item.ApiGroupName">
                       </el-option>
                     </el-select>
                   </div>
@@ -199,10 +199,10 @@
                   </el-input>
                   <el-select style="width: 150px;" clearable v-model="ApiGroup" placeholder="请选择">
                     <el-option
-                      v-for="item in ApiGroupsData"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
+                      v-for="item in ApiGroupsDetailsData"
+                      :key="item.ApiGroupName"
+                      :label="item.ApiGroupName"
+                      :value="item.ApiGroupName">
                     </el-option>
                   </el-select>
                   <el-button type="primary" icon="el-icon-search" size="small">搜索</el-button>
@@ -300,10 +300,10 @@
         <el-form-item label="组名称" :label-width="formLabelWidth">
           <el-select style="width: 100px;" clearable v-model="ApiDetailsEditForm.ApiGroup">
             <el-option
-              v-for="item in ApiGroupsData"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
+              v-for="item in ApiGroupsDetailsData"
+              :key="item.ApiGroupName"
+              :label="item.ApiGroupName"
+              :value="item.ApiGroupName">
             </el-option>
           </el-select>
         </el-form-item>
@@ -420,10 +420,6 @@ export default {
         Description: ''
       },
       ApiGroupsDetailsData: [],
-      ApiGroupsData: [{
-        value: '112',
-        label: '112'
-      }],
       ProtocolTypes: [{
         value: 'http',
         label: 'HTTP'

@@ -28,12 +28,12 @@
         stripe
         style="width: 100%">
         <el-table-column
-          prop="name"
+          prop="Name"
           label="服务注册方式名称"
           width="300">
         </el-table-column>
         <el-table-column
-          prop="center"
+          prop="RegistryType"
           label="注册中心选择"
           width="560">
         </el-table-column>
@@ -42,13 +42,14 @@
           label="操作">
           <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" content="编辑" placement="top">
-              <el-button @click="showEditRegistryDialog(scope.row.id)" type="primary"  icon="el-icon-edit" circle></el-button>
+              <el-button @click="showEditRegistryDialog(scope.row)" type="primary"  icon="el-icon-edit" circle></el-button>
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="删除" placement="top">
               <el-popconfirm
                 title="确认删除吗？"
+                @onConfirm="DeleteRegistry(scope.row)"
               >
-                <el-button @click="showEditApiGroupDetailDialog(scope)" type="danger" slot="reference" icon="el-icon-delete" circle></el-button>
+                <el-button type="danger" slot="reference" icon="el-icon-delete" circle></el-button>
               </el-popconfirm>
             </el-tooltip>
           </template>
@@ -59,10 +60,10 @@
     <el-dialog title="创建新的服务注册方式" :visible.sync="createRegistryDialogFormVisible">
       <el-form :model="registryCreateForm">
         <el-form-item label="服务注册方式名称" :label-width="formLabelWidth">
-          <el-input v-model="registryCreateForm.name" style="width: 300px" autocomplete="off"></el-input>
+          <el-input v-model="registryCreateForm.Name" style="width: 300px" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="注册中心类型" :label-width="formLabelWidth">
-          <el-select style="width: 300px;" clearable v-model="registryCreateForm.center" placeholder="请选择">
+          <el-select style="width: 300px;" clearable v-model="registryCreateForm.RegistryType" placeholder="请选择">
             <el-option
               v-for="item in registryCentersData"
               :key="item.value"
@@ -72,7 +73,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="接入地址" :label-width="formLabelWidth">
-          <el-input v-model="registryCreateForm.centerUrl" style="width: 300px" autocomplete="off"></el-input>
+          <el-input v-model="registryCreateForm.Addr" style="width: 300px" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -83,10 +84,10 @@
     <el-dialog title="编辑服务注册方式" :visible.sync="editRegistryDialogFormVisible">
       <el-form :model="registryEditForm">
         <el-form-item label="服务注册方式名称" :label-width="formLabelWidth">
-          <el-input v-model="registryEditForm.name" disabled style="width: 300px" autocomplete="off"></el-input>
+          <el-input v-model="registryEditForm.Name" disabled style="width: 300px" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="注册中心类型" :label-width="formLabelWidth">
-          <el-select style="width: 300px;" clearable disabled  v-model="registryEditForm.center" placeholder="请选择">
+          <el-select style="width: 300px;" clearable disabled  v-model="registryEditForm.RegistryType" placeholder="请选择">
             <el-option
               v-for="item in registryCentersData"
               :key="item.value"
@@ -96,12 +97,12 @@
           </el-select>
         </el-form-item>
         <el-form-item label="接入地址" :label-width="formLabelWidth">
-          <el-input v-model="registryEditForm.centerUrl" style="width: 300px" autocomplete="off"></el-input>
+          <el-input v-model="registryEditForm.Addr" style="width: 300px" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="editRegistryDialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="CreateRegistry">确 定</el-button>
+        <el-button type="primary" @click="UpdateRegistry">确 定</el-button>`*
       </div>
     </el-dialog>
   </div>
@@ -115,26 +116,27 @@ export default {
       RegistrysData: [
         {
           id: 1,
-          name: 'consul注册方式',
-          center: 'Consul',
-          centerUrl: '192.168.1.1:8888'
+          Name: 'consul注册方式',
+          RegistryType: 'Consul',
+          Addr: '192.168.1.1:8888'
         },
         {
           id: 2,
-          name: 'etcd注册方式',
-          center: 'Etcd',
-          centerUrl: '192.168.1.1:8888'
+          Name: 'etcd注册方式',
+          RegistryType: 'Etcd',
+          Addr: '192.168.1.1:8888'
         }
       ],
       registryCreateForm: {
-        name: 'consul注册方式',
-        center: 'Consul',
-        centerUrl: '192.168.1.1:8888'
+        Name: 'consul注册方式',
+        RegistryType: 'Consul',
+        Addr: '192.168.1.1:8888'
       },
       registryEditForm: {
-        name: 'consul注册方式',
-        center: 'Consul',
-        centerUrl: '192.168.1.1:8888'
+        id: 1,
+        Name: 'consul注册方式',
+        RegistryType: 'Consul',
+        Addr: '192.168.1.1:8888'
       },
       registryCenter: '',
       registryCentersData: [
@@ -170,13 +172,43 @@ export default {
     showCreateRegistryDialog () {
       this.createRegistryDialogFormVisible = true
     },
-    CreateRegistry () {
+    async CreateRegistry () {
       this.createRegistryDialogFormVisible = false
+      const response = await this.$http.post('/createRegistry', this.registryCreateForm)
+      console.log(response)
+      this.$message.success('创建注册中心成功!')
+      this.QueryRegistry()
     },
-    showEditRegistryDialog (id) {
+    async UpdateRegistry () {
+      this.editRegistryDialogFormVisible = false
+      console.log(this.registryEditForm)
+      const response = await this.$http.post('/updateRegistry', this.registryEditForm)
+      console.log(response)
+      this.$message.success('修改注册中心成功!')
+      this.QueryRegistry()
+    },
+    async QueryRegistry () {
+      const response = await this.$http.get('/queryRegistry')
+      console.log(response)
+      this.RegistrysData = response.data['data']
+    },
+    async DeleteRegistry (row) {
+      // 上传表单
+      this.registryEditForm = row
+      const response = await this.$http.post('/deleteRegistry', this.registryEditForm)
+      console.log(response)
+      this.QueryRegistry()
+      this.$message.success('删除注册中心成功!')
+    },
+    showEditRegistryDialog (row) {
       this.editRegistryDialogFormVisible = true
-      this.registryEditForm = this.RegistrysData[id - 1]
+      this.registryEditForm = row
     }
+  },
+  created: function () {
+  },
+  mounted: function () {
+    this.QueryRegistry()
   }
 }
 </script>
