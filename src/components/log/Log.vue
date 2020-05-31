@@ -50,7 +50,7 @@
                   <!--保留时间-->
                   <div style="margin-top: 20px;">
                     <p class="lh_15"><span >保留时间&nbsp;:&nbsp;</span><br></p>
-                    <el-select style="width: 300px;" :disabled="accessEditAble" v-model="AccessLogSavedTime" placeholder="请选择">
+                    <el-select style="width: 300px;" :disabled="accessEditAble" v-model.number="AccessLogSavedTime" placeholder="请选择">
                       <el-option
                         v-for="item in AccessLogSaveTimeData"
                         :key="item.value"
@@ -134,7 +134,7 @@
                   <!--保留时间-->
                   <div style="margin-top: 20px;">
                     <p class="lh_15"><span >保留时间&nbsp;:&nbsp;</span><br></p>
-                    <el-select style="width: 300px;" :disabled="runtimeEditAble" v-model="RuntimeLogSavedTime">
+                    <el-select style="width: 300px;" :disabled="runtimeEditAble" v-model.number="RuntimeLogSavedTime">
                       <el-option
                         v-for="item in AccessLogSaveTimeData"
                         :key="item.value"
@@ -205,22 +205,22 @@ export default {
       }
       ],
       AccessLogSaveTimeData: [{
-        value: '3',
+        value: 3,
         label: '3天'
       }, {
-        value: '7',
+        value: 7,
         label: '7天'
       },
       {
-        value: '30',
+        value: 30,
         label: '30天'
       },
       {
-        value: '90',
+        value: 90,
         label: '90天'
       },
       {
-        value: '180',
+        value: 180,
         label: '180天'
       }
       ],
@@ -237,41 +237,29 @@ export default {
       AccessLogRecordStatus: true,
       AccessLogAddress: '/store/log/access',
       AccessLogPeriod: 'hour',
-      AccessLogSavedTime: '3',
-      AccessLogSelectedFields: [{
-        field: '$request_id',
-        description: '请求id'
-      }, {
-        field: '$time_local',
-        description: '通用日志格式下的本地时间。'
-      }],
+      AccessLogSavedTime: 3,
+      AccessLogSelectedFields: [],
       // 运行日志参数
       RuntimeLogName: 'node',
       RuntimeLogRecordStatus: false,
       RuntimeLogAddress: '/store/log/runtime',
       RuntimeLogPeriod: 'hour',
-      RuntimeLogSavedTime: '3',
-      RuntimeLogRecordTypes: ['Error'],
+      RuntimeLogSavedTime: 3,
+      RuntimeLogRecordTypes: [],
       // 回退请求日志参数数据
       CopyAccessLogName: 'access',
       CopyAccessLogRecordStatus: true,
       CopyAccessLogAddress: '/store/log/access',
       CopyAccessLogPeriod: 'hour',
       CopyAccessLogSavedTime: '3',
-      CopyAccessLogSelectedFields: [{
-        field: '$request_id',
-        description: '请求id'
-      }, {
-        field: '$time_local',
-        description: '通用日志格式下的本地时间。'
-      }],
+      CopyAccessLogSelectedFields: [],
       // 回退运行日志参数数据
       CopyRuntimeLogName: 'node',
       CopyRuntimeLogRecordStatus: false,
       CopyRuntimeLogAddress: '/store/log/runtime',
       CopyRuntimeLogPeriod: 'hour',
       CopyRuntimeLogSavedTime: '3',
-      CopyRuntimeLogRecordTypes: ['Error'],
+      CopyRuntimeLogRecordTypes: [],
       // 组件配置
       LogActiveName: 'first',
       accessEditAble: true,
@@ -309,15 +297,18 @@ export default {
         this.accessCancel = 'display:none;'
         // 上传表单
         const AccessLogSettingEditForm = {
-          'AccessLogName': this.AccessLogName,
-          'AccessLogRecordStatus': this.AccessLogRecordStatus,
-          'AccessLogAddress': this.AccessLogAddress,
-          'AccessLogPeriod': this.AccessLogPeriod,
-          'AccessLogSavedTime': this.AccessLogSavedTime,
-          'AccessLogSelectedFields': this.AccessLogSelectedFields
+          'LogType': 2,
+          'LogName': this.AccessLogName,
+          'LogRecordStatus': this.AccessLogRecordStatus,
+          'LogAddress': this.AccessLogAddress,
+          'LogPeriod': this.AccessLogPeriod,
+          'LogSavedTime': this.AccessLogSavedTime,
+          'LogRecordField': JSON.stringify(this.AccessLogSelectedFields)
         }
+        console.log(AccessLogSettingEditForm)
         const response = await this.$http.post('/saveAccessLogSetting', AccessLogSettingEditForm)
         console.log(response)
+        this.$message.success('修改请求日志配置成功!')
       }
     },
     // 取消编辑请求日志设置
@@ -358,16 +349,41 @@ export default {
         this.runtimeCancel = 'display:none;'
         // 上传表单
         const RuntimeLogSettingEditForm = {
-          'RuntimeLogName': this.RuntimeLogName,
-          'RuntimeLogRecordStatus': this.RuntimeLogRecordStatus,
-          'RuntimeLogAddress': this.RuntimeLogAddress,
-          'RuntimeLogPeriod': this.RuntimeLogPeriod,
-          'RuntimeLogSavedTime': this.RuntimeLogSavedTime,
-          'RuntimeLogRecordTypes': this.RuntimeLogRecordTypes
+          'LogType': 1,
+          'LogName': this.RuntimeLogName,
+          'LogRecordStatus': this.RuntimeLogRecordStatus,
+          'LogAddress': this.RuntimeLogAddress,
+          'LogPeriod': this.RuntimeLogPeriod,
+          'LogSavedTime': this.RuntimeLogSavedTime,
+          'LogRecordField': JSON.stringify(this.RuntimeLogRecordTypes)
         }
+        console.log(RuntimeLogSettingEditForm)
         const response = await this.$http.post('/saveRuntimeLogSetting', RuntimeLogSettingEditForm)
         console.log(response)
+        this.$message.success('修改运行日志配置成功!')
       }
+    },
+    async QueryLogSettings () {
+      const response = await this.$http.get('/queryLogSetting')
+      console.log(response)
+      response.data['data'].forEach((item, index, array) => {
+        if (item['LogType'] === 1) {
+          this.RuntimeLogName = item['LogName']
+          this.RuntimeLogRecordStatus = !!item['LogRecordStatus']
+          this.RuntimeLogAddress = item['LogAddress']
+          this.RuntimeLogPeriod = item['LogPeriod']
+          this.RuntimeLogSavedTime = item['LogSavedTime']
+          this.RuntimeLogRecordTypes = JSON.parse(item['LogRecordField'])
+        } else if (item['LogType'] === 2) {
+          this.AccessLogName = item['LogName']
+          this.AccessLogRecordStatus = !!item['LogRecordStatus']
+          this.AccessLogAddress = item['LogAddress']
+          this.AccessLogPeriod = item['LogPeriod']
+          this.AccessLogSavedTime = item['LogSavedTime']
+          this.AccessLogSelectedFields = JSON.parse(item['LogRecordField'])
+          this.renderFieldTable(this.AccessLogSelectedFields)
+        }
+      })
     },
     // 取消编辑运行日志设置
     async CancelRuntimeLogSettings () {
@@ -392,27 +408,11 @@ export default {
       this.RuntimeLogSavedTime = this.CopyRuntimeLogSavedTime
       this.RuntimeLogRecordTypes = this.CopyRuntimeLogRecordTypes
     },
-    // 取消编辑运行日志设置
-    async CancelRuntimeLogSettingsaa () {
-      const ApiDetailsCreateForm = {
-        'ApiName': this.ApiName,
-        'ApiMethod': this.ApiMethod,
-        'ApiUrl': this.ApiUrl,
-        'BackendUrl': this.BackendUrl,
-        'ApiGroup': this.ApiGroup,
-        'ApiReturnType': this.ApiReturnType,
-        'ApiTimeout': this.ApiTimeout,
-        'ApiRetry': this.ApiRetry,
-        'ApiReturnContent': this.ApiReturnContent
-      }
-      // 上传表单
-      const response = await this.$http.post('/createApiDetail', ApiDetailsCreateForm)
-      console.log(response)
-    },
     handleSelectAble (row, index) {
       return !this.accessEditAble
     },
     renderFieldTable (param) {
+      console.log(param)
       let FieldParam = []
       param.forEach(field => {
         this.fieldsData.forEach(fieldAll => {
@@ -427,6 +427,7 @@ export default {
   created: function () {
   },
   mounted: function () {
+    this.QueryLogSettings()
     this.renderFieldTable(this.AccessLogSelectedFields)
   }
 }
