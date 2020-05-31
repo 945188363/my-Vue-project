@@ -369,14 +369,14 @@ export default {
       response.data['data'].forEach((item, index, array) => {
         if (item['LogType'] === 1) {
           this.RuntimeLogName = item['LogName']
-          this.RuntimeLogRecordStatus = !!item['LogRecordStatus']
+          this.RuntimeLogRecordStatus = item['LogRecordStatus'] === 1
           this.RuntimeLogAddress = item['LogAddress']
           this.RuntimeLogPeriod = item['LogPeriod']
           this.RuntimeLogSavedTime = item['LogSavedTime']
           this.RuntimeLogRecordTypes = JSON.parse(item['LogRecordField'])
         } else if (item['LogType'] === 2) {
           this.AccessLogName = item['LogName']
-          this.AccessLogRecordStatus = !!item['LogRecordStatus']
+          this.AccessLogRecordStatus = item['LogRecordStatus'] === 1
           this.AccessLogAddress = item['LogAddress']
           this.AccessLogPeriod = item['LogPeriod']
           this.AccessLogSavedTime = item['LogSavedTime']

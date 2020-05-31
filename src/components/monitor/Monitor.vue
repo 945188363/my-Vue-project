@@ -90,23 +90,73 @@ export default {
       } else {
         this.prometheusVisualAble = 'display:none'
       }
+      this.SavePrometheus()
     },
     showELKSettings () {
       if (this.elkMonitor) {
         this.elkVisualAble = 'display:block'
       } else {
         this.elkVisualAble = 'display:none'
+        this.CancelELKUrl()
       }
     },
-    async SaveELKUrl () {
+    async SavePrometheus () {
+      const PrometheusForm = {
+        MonitorType: 'Prometheus',
+        MonitorStatus: this.prometheusMonitor
+      }
+      console.log(PrometheusForm)
+      const response = await this.$http.post('/savePrometheus', PrometheusForm)
       this.$message.success('保存成功！')
-      const response = await this.$http.post('/saveELKUrl', this.ELKUrl)
       console.log(response)
     },
-    CancelELKUrl () {
+    async SaveELKUrl () {
+      const ELKForm = {
+        MonitorType: 'ELK',
+        MonitorStatus: this.elkMonitor,
+        MonitorConfig: this.ELKUrl
+      }
+      console.log(ELKForm)
+      const response = await this.$http.post('/saveELKUrl', ELKForm)
+      this.$message.success('保存成功！')
+      console.log(response)
+    },
+    async QueryMonitor () {
+      const response = await this.$http.get('/queryMonitors')
+      console.log(response)
+      // 处理监控的配置
+      response.data['data'].forEach((item) => {
+        if (item['MonitorType'] === 'ELK') {
+          if (item['MonitorStatus'] === 1) {
+            this.elkMonitor = true
+            this.elkVisualAble = 'display:block'
+            this.ELKUrl = item['MonitorConfig']
+          }
+        }
+        if (item['MonitorType'] === 'Prometheus') {
+          if (item['MonitorStatus'] === 1) {
+            this.prometheusMonitor = true
+            this.prometheusVisualAble = 'display:block'
+          }
+        }
+      })
+    },
+    async CancelELKUrl () {
       this.elkMonitor = false
       this.elkVisualAble = 'display:none'
+      const ELKForm = {
+        MonitorType: 'ELK',
+        MonitorStatus: this.elkMonitor
+      }
+      console.log(ELKForm)
+      const response = await this.$http.post('/saveELKUrl', ELKForm)
+      console.log(response)
     }
+  },
+  created: function () {
+  },
+  mounted: function () {
+    this.QueryMonitor()
   }
 }
 </script>
