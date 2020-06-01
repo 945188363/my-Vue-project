@@ -15,11 +15,13 @@
   },
   "dependencies": {
     "axios": "^0.19.2",
+    "echarts": "^4.8.0",
     "element-ui": "latest",
     "less": "^3.11.1",
     "less-loader": "^5.0.0",
     "qs": "latest",
     "qs.js": "^0.1.12",
+    "v-charts": "^1.19.0",
     "vue": "^2.5.2",
     "vue-axios": "^2.1.5",
     "vue-router": "^3.0.1"
