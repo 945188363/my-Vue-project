@@ -1,6 +1,6 @@
 <template>
   <el-scrollbar>
-    <div style="height: 620px;">
+    <div style="height: 600px;">
       <div class="layer">
         <div class="line">
           <!--一周访问统计-->
@@ -129,7 +129,6 @@ export default {
       arrayObj.sort((a, b) => {
         return b[1] - a[1]
       })
-      console.log(arrayObj)
       // 如果map长度小于5则全放入
       if (arrayObj.length <= 5) {
         arrayObj.forEach(row => {
@@ -153,8 +152,6 @@ export default {
           index++
         })
       }
-      console.log(this.ringData.rows)
-      console.log(this.chartData.rows)
       this.loading = false
     },
     parseDate (date) {
@@ -163,9 +160,10 @@ export default {
     },
     async QueryCpuPencent () {
       const response = await this.$http.get('/queryCpu')
-
+      console.log(response)
+      let cpuPercent = response.data['data'].toFixed(2) / 100
       this.gaugeData.rows.push(
-        { type: '占比', value: response.data['data'] }
+        { type: '占比', value: cpuPercent }
       )
     }
   },
@@ -174,7 +172,6 @@ export default {
   mounted: function () {
     this.QueryCount()
     this.QueryCpuPencent()
-
   }
 }
 </script>
