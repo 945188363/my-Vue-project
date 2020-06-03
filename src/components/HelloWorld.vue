@@ -1,38 +1,40 @@
 <template>
-  <div class="hello">
-    <div class="layer">
-      <div class="line">
-        <!--一周访问统计-->
-        <h4>一周访问统计</h4>
-        <button @click="changeType">切换图表类型</button>
-        <ve-chart :data="chartData"
-                  :settings="chartSettings"
-                  :loading="loading"
-                  :data-empty="dataEmpty">
-        </ve-chart>
+  <el-scrollbar>
+    <div style="height: 620px;">
+      <div class="layer">
+        <div class="line">
+          <!--一周访问统计-->
+          <h4>一周访问统计</h4>
+          <button @click="changeType">切换图表类型</button>
+          <ve-chart :data="chartData"
+                    :settings="chartSettings"
+                    :loading="loading"
+                    :data-empty="dataEmpty">
+          </ve-chart>
+        </div>
+        <div class="line">
+          <h4>一周API访问前五名</h4>
+          <ve-ring :data="ringData"></ve-ring>
+        </div>
       </div>
-      <div class="line">
-        <h4>服务器性能指标</h4>
-        <ve-ring :data="ringData"></ve-ring>
-      </div>
-    </div>
-    <div class="layer">
-      <div class="line">
-        <!--服务器性能指标-->
-        <h4>服务器性能指标</h4>
-        <ve-gauge :data="gaugeData"
-                  :settings="gaugeSettings"
-                  :loading="loading">
-        </ve-gauge>
-      </div>
-      <div class="line">
-        <!--整体数据展示-->
-        <h4>整体数据展示</h4>
-        <ve-funnel :data="funnelData"></ve-funnel>
+      <div class="layer">
+        <div class="line">
+          <!--服务器性能指标-->
+          <h4>服务器性能指标</h4>
+          <ve-gauge :data="gaugeData"
+                    :settings="gaugeSettings"
+                    :loading="loading">
+          </ve-gauge>
+        </div>
+        <div class="line">
+          <!--整体数据展示-->
+          <h4>整体数据展示</h4>
+          <ve-funnel :data="funnelData"></ve-funnel>
 
+        </div>
       </div>
     </div>
-  </div>
+  </el-scrollbar>
 </template>
 
 <script>
@@ -62,14 +64,11 @@ export default {
       chartSettings: { type: this.typeArr[this.index] },
       chartData: {
         columns: ['日期', '访问用户'],
-        rows: [
-        ]
+        rows: []
       },
       gaugeData: {
         columns: ['type', 'value'],
-        rows: [
-          { type: '占比', value: 0.8 }
-        ]
+        rows: []
       },
       funnelData: {
         columns: ['状态', '数值'],
@@ -81,15 +80,8 @@ export default {
         ]
       },
       ringData: {
-        columns: ['日期', '访问用户'],
-        rows: [
-          { '日期': '1/1', '访问用户': 1393 },
-          { '日期': '1/2', '访问用户': 3530 },
-          { '日期': '1/3', '访问用户': 2923 },
-          { '日期': '1/4', '访问用户': 1723 },
-          { '日期': '1/5', '访问用户': 3792 },
-          { '日期': '1/6', '访问用户': 4593 }
-        ]
+        columns: ['API名称', '访问次数'],
+        rows: []
       }
     }
   },
@@ -110,12 +102,18 @@ export default {
       const response = await this.$http.get('/queryCount' + param)
       console.log(response)
       let countData = new Map()
+      let totalData = new Map()
       response.data['data'].forEach((item) => {
         let time = this.parseDate(item['Time'].slice(0, 10))
         if (countData.has(time)) {
           countData.set(time, countData.get(time) + 1)
         } else {
           countData.set(time, 1)
+        }
+        if (totalData.has(item['ApiName'])) {
+          totalData.set(item['ApiName'], totalData.get(item['ApiName']) + 1)
+        } else {
+          totalData.set(item['ApiName'], 1)
         }
       })
       countData.forEach((v, k, map) => {
@@ -125,18 +123,58 @@ export default {
           }
         )
       })
+      // 先转成array排序 再转成map回来
+      let arrayObj = Array.from(totalData)
+      // map降序排序
+      arrayObj.sort((a, b) => {
+        return b[1] - a[1]
+      })
+      console.log(arrayObj)
+      // 如果map长度小于5则全放入
+      if (arrayObj.length <= 5) {
+        arrayObj.forEach(row => {
+          this.ringData.rows.push(
+            {
+              'API名称': row[0], '访问次数': row[1]
+            }
+          )
+        })
+      } else {
+        // 放入前五数据
+        let index = 0
+        arrayObj.forEach(row => {
+          if (index < 5) {
+            this.ringData.rows.push(
+              {
+                'API名称': row[0], '访问次数': row[1]
+              }
+            )
+          }
+          index++
+        })
+      }
+      console.log(this.ringData.rows)
       console.log(this.chartData.rows)
       this.loading = false
     },
     parseDate (date) {
       let strArr = date.split('-')
       return strArr[1] + '月' + strArr[2] + '日'
+    },
+    async QueryCpuPencent () {
+      const response = await this.$http.get('/queryCpu')
+
+      this.gaugeData.rows.push(
+        { type: '占比', value: response.data['data'] }
+      )
     }
   },
   created: function () {
   },
   mounted: function () {
     this.QueryCount()
+    this.QueryCpuPencent()
+
   }
 }
 </script>
