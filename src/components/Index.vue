@@ -52,6 +52,7 @@
               <i class="el-icon-setting"></i>
               <span>网关设置</span>
             </template>
+            <el-menu-item index="/ipRestriction">黑白名单设置</el-menu-item>
             <el-menu-item index="/logManager">日志设置</el-menu-item>
             <el-menu-item index="/elkSearch">ELK日志查询</el-menu-item>
           </el-submenu>

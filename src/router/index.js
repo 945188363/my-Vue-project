@@ -11,6 +11,7 @@ import Monitor from '../components/monitor/Monitor'
 import PluginManager from '../components/plugin/PluginManager'
 import PluginSetting from '../components/plugin/PluginSetting'
 import LogSearch from '../components/log/LogSearch'
+import IpRestriction from '../components/ipRestriction/IpRestriction'
 
 Vue.use(Router)
 
@@ -68,6 +69,10 @@ export default new Router({
         {
           path: '/elkSearch',
           component: LogSearch
+        },
+        {
+          path: '/ipRestriction',
+          component: IpRestriction
         }
       ]
     }
