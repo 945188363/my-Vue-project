@@ -7,9 +7,9 @@
         <el-breadcrumb-item>ELK日志查询</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    <div style="margin-top: 15px">
-      // TODO
-    </div>
+    <iframe class="iframe" src="http://localhost:5601/app/logs/" frameborder="0" align="left" width="85%" height="85%"  scrolling="auto" marginWidth=0 marginHeight=0  style="position:absolute;top:105px;">
+      <p class="tip">你的浏览器不支持iframe标签</p>
+    </iframe>
   </div>
 </template>
 
